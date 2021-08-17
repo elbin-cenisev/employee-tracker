@@ -19,12 +19,21 @@ const db = mysql.createConnection(
 );
 
 async function main_menu() {
+  // Display entire department table
+  const viewAllDepartmentsQry = `SELECT * FROM department;`;
+
+  // Display role table alongside the name of the relevant department
+  const viewAllRolesQry = `
+  SELECT roles.id, roles.title, department.department_name AS department, roles.salary 
+  FROM roles 
+  JOIN department ON roles.department_id = department.id;`;
+
   const mainMenuQs = [
     {
       name: 'selection',
       type: 'list',
       message: 'Who would you like to do?',
-      choices: ["View All Employees", "View All Departments"]
+      choices: ["View All Employees", "View All Departments", "View All Roles"]
     }
   ];
   let selection = await inquirer.prompt(mainMenuQs);
@@ -36,9 +45,16 @@ async function main_menu() {
 
     // Show entire department table
     case ("View All Departments"):
-      db.query(`SELECT * FROM department;`, (err, result) => {
-        if (err) { console.log(err); }  // Basic error handling
-        console.table(result);  // Display queried table
+      db.query(viewAllDepartmentsQry, (err, result) => {
+        if (err) { console.log(err); }
+        console.table(result);
+      });
+
+    // Show joined departments / roles table
+    case ("View All Roles"):
+      db.query(viewAllRolesQry, (err, result) => {
+        if (err) { console.log(err); }
+        console.table(result);
       });
   }
 }
