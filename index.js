@@ -28,11 +28,18 @@ async function main_menu() {
     }
   ];
   let selection = await inquirer.prompt(mainMenuQs);
-  
-  switch(selection.selection) {
-    case("View All Employees"):
+
+  switch (selection.selection) {
+    // Show entire employee table
+    case ("View All Employees"):
       console.log(`You selected "View All Employees"`);
-    case("View All Departments")
+
+    // Show entire department table
+    case ("View All Departments"):
+      db.query(`SELECT * FROM department;`, (err, result) => {
+        if (err) { console.log(err); }  // Basic error handling
+        console.log(result);  // Display queried table
+      });
   }
 }
 
