@@ -28,7 +28,11 @@ async function main_menu() {
     }
   ];
   let selection = await inquirer.prompt(mainMenuQs);
-  console.log(`Hello World, you picked "` + selection.selection +`"`);
+  
+  switch(selection.selection) {
+    case("View All Employees"):
+      console.log(`You selected "View All Employees"`);
+  }
 }
 
 main_menu();
