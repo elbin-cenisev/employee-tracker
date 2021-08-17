@@ -38,7 +38,7 @@ async function main_menu() {
     case ("View All Departments"):
       db.query(`SELECT * FROM department;`, (err, result) => {
         if (err) { console.log(err); }  // Basic error handling
-        console.log(result);  // Display queried table
+        console.table(result);  // Display queried table
       });
   }
 }
