@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/elbin-cenisev/employee-tracker/issues"
   },
-  "homepage": "https://github.com/elbin-cenisev/employee-tracker#readme"
+  "homepage": "https://github.com/elbin-cenisev/employee-tracker#readme",
+  "dependencies": {
+    "mysql2": "^2.3.0"
+  }
 }
