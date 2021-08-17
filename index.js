@@ -24,7 +24,7 @@ async function main_menu() {
       name: 'selection',
       type: 'list',
       message: 'Who would you like to do?',
-      choices: ["View All Employees"]
+      choices: ["View All Employees", "View All Departments"]
     }
   ];
   let selection = await inquirer.prompt(mainMenuQs);
@@ -32,6 +32,7 @@ async function main_menu() {
   switch(selection.selection) {
     case("View All Employees"):
       console.log(`You selected "View All Employees"`);
+    case("View All Departments")
   }
 }
 
