@@ -3,10 +3,6 @@ const inquirer = require('inquirer');
 const cTable = require('console.table');
 const DATABASE = 'employees_db'
 
-// Express middleware
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
-
 // Connect to database
 const db = mysql.createConnection(
   {
