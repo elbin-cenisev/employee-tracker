@@ -100,6 +100,19 @@ async function main_menu() {
 
       break;
 
+    // Insert into roles table
+    case ("Add Role"):
+
+      // Ask for salary of role
+      const selectRole = [
+        {
+          name: 'selection',
+          message: 'What is the name of the role?',
+        }
+      ];
+      let selectedRole = await inquirer.prompt(selectRole);
+      const role = selectedRole.selection;
+      break;
     // Show joined departments / roles table
     case ("View All Roles"):
       const viewAllRolesQry = `
