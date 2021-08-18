@@ -57,12 +57,12 @@ async function main_menu() {
         ON emp.manager_id = man.id
     `;
 
-    db.query(viewAllEmployeesQry, (err, result) => {
-      if (err) { console.log(err); }
-      console.table(result);
-    });
+      db.query(viewAllEmployeesQry, (err, result) => {
+        if (err) { console.log(err); }
+        console.table(result);
+      });
 
-    break;
+      break;
 
     // Display department table
     case ("View All Departments"):
@@ -76,7 +76,7 @@ async function main_menu() {
       break;
 
     // Insert into department table
-    case("Add Department"):
+    case ("Add Department"):
       // Ask for name of department that user wants to add
       const selectDepartment = [
         {
@@ -85,7 +85,19 @@ async function main_menu() {
         }
       ];
       let selectedDep = await inquirer.prompt(selectDepartment);
-      console.log(`You want to add ${selectedDep.selection}`);
+      const department = selectedDep.selection;
+
+      // Insert the input into department table
+      const addDepartmentQry = `
+      INSERT INTO department (name) 
+      VALUES ("${department}");
+      `;
+
+      db.query(addDepartmentQry, (err, result) => {
+        if (err) { console.log(err); }
+      console.log(`Added ${department} to the database`)
+      });
+
       break;
 
     // Show joined departments / roles table
