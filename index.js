@@ -64,7 +64,7 @@ async function main_menu() {
 
       db.query(viewAllEmployeesQry, (err, result) => {
         if (err) { console.log(err); }
-        console.table(result);
+        cTable(result);
       });
 
       break;
@@ -75,7 +75,7 @@ async function main_menu() {
 
       db.query(viewAllDepartmentsQry, (err, result) => {
         if (err) { console.log(err); }
-        console.table(result);
+        cTable(result);
       });
 
       break;
@@ -164,7 +164,7 @@ async function main_menu() {
 
       db.query(viewAllRolesQry, (err, result) => {
         if (err) { console.log(err); }
-        console.table(result);
+        cTable(result);
       });
 
       break;
