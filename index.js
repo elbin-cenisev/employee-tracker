@@ -18,6 +18,7 @@ const db = mysql.createConnection(
   console.log(`Connected to the database.`)
 );
 
+// The main() function
 async function main_menu() {
 
   // Holds all main menu questions
