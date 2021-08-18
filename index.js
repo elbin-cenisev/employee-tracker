@@ -128,15 +128,13 @@ async function main_menu() {
       const salary = selectedSalary.selection;
 
       // Ask for department of role
-      // let allDepartments = [];
+      let allDepartments = [];
       const selectDepartment2 = [
         {
           name: 'selection',
           type: 'list',
           message: 'Which department does the role belong to?',
-          choices: [
-            "Sales"
-          ]
+          choices: allDepartments
         }
       ];
       let selectedDepartment = await inquirer.prompt(selectDepartment2);
@@ -172,4 +170,5 @@ async function main_menu() {
   }
 }
 
+// Initialize application
 main_menu();
