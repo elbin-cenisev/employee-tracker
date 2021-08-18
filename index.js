@@ -26,7 +26,12 @@ async function main_menu() {
       name: 'selection',
       type: 'list',
       message: 'Who would you like to do?',
-      choices: ["View All Employees", "View All Departments", "Add Department", "View All Roles"]
+      choices: [
+        "View All Employees",
+        "View All Departments",
+        "Add Department",
+        "View All Roles",
+        "Add Role"]
     }
   ];
 
@@ -35,9 +40,8 @@ async function main_menu() {
 
   switch (selection.selection) {
 
-    /* Show employee's name, title, department, salary and their 
+    /* Show all employees' name, title, department, salary and their 
     manager's name (if they have been assigned to a manager) */
-
     case ("View All Employees"):
       const viewAllEmployeesQry = `
       SELECT 
@@ -95,7 +99,7 @@ async function main_menu() {
 
       db.query(addDepartmentQry, (err, result) => {
         if (err) { console.log(err); }
-      console.log(`Added ${department} to the database`)
+        console.log(`Added ${department} to the database`)
       });
 
       break;
@@ -104,14 +108,14 @@ async function main_menu() {
     case ("Add Role"):
 
       // Ask for salary of role
-      const selectRole = [
+      const selectTitle = [
         {
           name: 'selection',
           message: 'What is the name of the role?',
         }
       ];
-      let selectedRole = await inquirer.prompt(selectRole);
-      const role = selectedRole.selection;
+      let selectedTitle = await inquirer.prompt(selectTitle);
+      const title = selectedTitle.selection;
 
       // Ask for salary of role
       const selectSalary = [
@@ -122,11 +126,39 @@ async function main_menu() {
       ];
       let selectedSalary = await inquirer.prompt(selectSalary);
       const salary = selectedSalary.selection;
+
+      // Ask for department of role
+      // let allDepartments = [];
+      const selectDepartment2 = [
+        {
+          name: 'selection',
+          type: 'list',
+          message: 'Which department does the role belong to?',
+          choices: [
+            "Sales"
+          ]
+        }
+      ];
+      let selectedDepartment = await inquirer.prompt(selectDepartment2);
+      // const department2 = selectedDepartment.selection;
+
+      // Insert the input into roles table
+      const addRoleQry = `
+      INSERT INTO roles (title, salary, department_id)
+      VALUES  ("${title}", ${salary}, 1);
+      `;
+
+      db.query(addRoleQry, (err, result) => {
+        if (err) { console.log(err); }
+        console.log(`Added ${title} to the database`)
+      });
+
       break;
+
     // Show joined departments / roles table
     case ("View All Roles"):
       const viewAllRolesQry = `
-        SELECT roles.id, roles.title, department.department_name AS department, roles.salary 
+        SELECT roles.id, roles.title, department.name AS department, roles.salary 
         FROM roles 
         JOIN department ON roles.department_id = department.id;
         `;
