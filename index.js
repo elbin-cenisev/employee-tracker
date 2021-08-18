@@ -34,10 +34,35 @@ async function main_menu() {
   let selection = await inquirer.prompt(mainMenuQs);
 
   switch (selection.selection) {
-    // Show entire employee table
+
+    /* Show employee's name, title, department, salary and their 
+    manager's name (if they have been assigned to a manager) */
+
     case ("View All Employees"):
-      console.log(`You selected "View All Employees"`);
-      break;
+      const viewAllEmployeesQry = `
+      SELECT 
+        emp.id, 
+        emp.first_name,
+        emp.last_name,
+        roles.title,
+        department.name AS department,
+        roles.salary,
+        CONCAT(man.first_name, ' ', man.last_name) AS manager
+      FROM employee emp
+      JOIN roles
+        ON emp.role_id = roles.id
+      JOIN department
+        ON department.id = roles.department_id
+      LEFT JOIN employee man
+        ON emp.manager_id = man.id
+    `;
+
+    db.query(viewAllEmployeesQry, (err, result) => {
+      if (err) { console.log(err); }
+      console.table(result);
+    });
+
+    break;
 
     // Display department table
     case ("View All Departments"):
