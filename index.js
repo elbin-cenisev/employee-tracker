@@ -19,15 +19,8 @@ const db = mysql.createConnection(
 );
 
 async function main_menu() {
-  // Display entire department table
-  const viewAllDepartmentsQry = `SELECT * FROM department;`;
 
-  // Display role table alongside the name of the relevant department
-  const viewAllRolesQry = `
-  SELECT roles.id, roles.title, department.department_name AS department, roles.salary 
-  FROM roles 
-  JOIN department ON roles.department_id = department.id;`;
-
+  // Holds all main menu questions
   const mainMenuQs = [
     {
       name: 'selection',
@@ -36,26 +29,41 @@ async function main_menu() {
       choices: ["View All Employees", "View All Departments", "View All Roles"]
     }
   ];
+
+  // Choice user made in main menu
   let selection = await inquirer.prompt(mainMenuQs);
 
   switch (selection.selection) {
     // Show entire employee table
     case ("View All Employees"):
       console.log(`You selected "View All Employees"`);
+      break;
 
-    // Show entire department table
+    // Display department table
     case ("View All Departments"):
+      const viewAllDepartmentsQry = `SELECT * FROM department;`;
+
       db.query(viewAllDepartmentsQry, (err, result) => {
         if (err) { console.log(err); }
         console.table(result);
       });
 
+      break;
+
     // Show joined departments / roles table
     case ("View All Roles"):
+      const viewAllRolesQry = `
+        SELECT roles.id, roles.title, department.department_name AS department, roles.salary 
+        FROM roles 
+        JOIN department ON roles.department_id = department.id;
+        `;
+
       db.query(viewAllRolesQry, (err, result) => {
         if (err) { console.log(err); }
         console.table(result);
       });
+
+      break;
   }
 }
 
