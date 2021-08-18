@@ -77,7 +77,15 @@ async function main_menu() {
 
     // Insert into department table
     case("Add Department"):
-      console.log("You are in 'Add Department'");
+      // Ask for name of department that user wants to add
+      const selectDepartment = [
+        {
+          name: 'selection',
+          message: 'What is the name of the department?',
+        }
+      ];
+      let selectedDep = await inquirer.prompt(selectDepartment);
+      console.log(`You want to add ${selectedDep.selection}`);
       break;
 
     // Show joined departments / roles table
