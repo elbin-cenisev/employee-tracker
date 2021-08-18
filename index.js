@@ -26,7 +26,7 @@ async function main_menu() {
       name: 'selection',
       type: 'list',
       message: 'Who would you like to do?',
-      choices: ["View All Employees", "View All Departments", "View All Roles"]
+      choices: ["View All Employees", "View All Departments", "Add Department", "View All Roles"]
     }
   ];
 
@@ -73,6 +73,11 @@ async function main_menu() {
         console.table(result);
       });
 
+      break;
+
+    // Insert into department table
+    case("Add Department"):
+      console.log("You are in 'Add Department'");
       break;
 
     // Show joined departments / roles table
