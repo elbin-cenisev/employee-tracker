@@ -112,6 +112,16 @@ async function main_menu() {
       ];
       let selectedRole = await inquirer.prompt(selectRole);
       const role = selectedRole.selection;
+
+      // Ask for salary of role
+      const selectSalary = [
+        {
+          name: 'selection',
+          message: 'What is the salary of the role?',
+        }
+      ];
+      let selectedSalary = await inquirer.prompt(selectSalary);
+      const salary = selectedSalary.selection;
       break;
     // Show joined departments / roles table
     case ("View All Roles"):
