@@ -1,19 +1,17 @@
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 const inquirer = require('inquirer');
 const cTable = require('console.table');
 const DATABASE = 'employees_db'
 
-// Connect to database
-const db = mysql.createConnection(
+const pool = mysql.createPool(
   {
     host: 'localhost',
-
-    // MySQL username,
     user: 'root',
-
-    // MySQL password
     password: 'mypass',
-    database: DATABASE
+    database: DATABASE,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
   },
   console.log(`Connected to the database.`)
 );
@@ -144,21 +142,47 @@ async function addDepartment() {
 async function addRole() {
   // Ask for name of role
   // Ask for salary of role
-  // Ask for department for role
-  // Insert role into role table
-  let role = "Example Role";
-  let salary = 5;
-  let departmentID = 1;
+  // Choose from department list
+  departmentList = ["Sales"]
+  const selectDepartment = [
+    {
+      name: 'selection',
+      type: 'list',
+      message: 'What would you like to do?',
+      choices: departmentList
+    }
+  ];
 
-  const addRoleQry = `
-  INSERT INTO roles (title, salary, department_id) 
-  VALUES ("${role}", ${salary}, ${departmentID});
+  // Choice user made in main menu
+  let selectedDepartment = await inquirer.prompt(selectDepartment);
+  let departmentName = selectedDepartment.selection;
+
+  const getDepartmentIDQry = `
+  SELECT id FROM department 
+  WHERE department.name = ?
   `;
 
-  db.query(addRoleQry, (err, result) => {
-    if (err) { console.log(err); }
-    console.log(`Added ${role} to the database`)
-  });
+  let result = await pool.query(getDepartmentIDQry, [departmentName]);
+  if (result[0].length < 1) {
+    throw new Error('Department with this name was not found');
+  }
+  let departmentID = result[0][0].id;
+  console.log(departmentID);
+
+  // // Insert role into role table
+  // let role = "Example Role";
+  // let salary = 5;
+  // let departmentID = 1;
+
+  // const addRoleQry = `
+  // INSERT INTO role (title, salary, department_id) 
+  // VALUES ("${role}", ${salary}, ${departmentID});
+  // `;
+
+  // db.query(addRoleQry, (err, result) => {
+  //   if (err) { console.log(err); }
+  //   console.log(`Added ${role} to the database`)
+  // });
 }
 
 // Initialize application
