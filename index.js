@@ -49,29 +49,8 @@ async function main_menu() {
       viewAllDepartments();
       break;
 
-    // Insert into department table
     case ("Add Department"):
-      // Ask for name of department that user wants to add
-      let selectDepartment = [
-        {
-          name: 'selection',
-          message: 'What is the name of the department?',
-        }
-      ];
-      let selectedDep = await inquirer.prompt(selectDepartment);
-      const department = selectedDep.selection;
-
-      // Insert the input into department table
-      const addDepartmentQry = `
-      INSERT INTO department (name) 
-      VALUES ("${department}");
-      `;
-
-      db.query(addDepartmentQry, (err, result) => {
-        if (err) { console.log(err); }
-        console.log(`Added ${department} to the database`)
-      });
-
+      addDepartment();
       break;
 
     // Insert into roles table
@@ -190,5 +169,31 @@ function viewAllRoles() {
     console.table(result);
   });
 }
+
+// Insert into department table
+function addDepartment() {
+  // Ask for name of department that user wants to add
+  let selectDepartment = [
+    {
+      name: 'selection',
+      message: 'What is the name of the department?',
+    }
+  ];
+
+  let selectedDep = await inquirer.prompt(selectDepartment);
+  const department = selectedDep.selection;
+
+  // Insert the new department into department table
+  const addDepartmentQry = `
+        INSERT INTO department (name) 
+        VALUES ("${department}");
+        `;
+
+  db.query(addDepartmentQry, (err, result) => {
+    if (err) { console.log(err); }
+    console.log(`Added ${department} to the database`)
+  });
+}
+
 // Initialize application
 main_menu();
