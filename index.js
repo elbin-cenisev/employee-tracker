@@ -92,6 +92,7 @@ async function viewEmployeeTable() {
     ON department.id = roles.department_id
   LEFT JOIN employee man
     ON emp.manager_id = man.id
+  ORDER BY emp.id ASC;
 `;
 
   let result = await pool.query(viewAllEmployeesQry);
@@ -299,7 +300,7 @@ async function updateEmpRole() {
 
 // Display department table
 async function viewAllDepartments() {
-  const viewAllDepartmentsQry = `SELECT * FROM department;`;
+  const viewAllDepartmentsQry = `SELECT * FROM department ORDER BY department.id ASC;`;
 
   let result = await pool.query(viewAllDepartmentsQry);
   if (result[0].length < 1) {
@@ -313,7 +314,8 @@ async function viewAllRoles() {
   const viewAllRolesQry = `
   SELECT roles.id, roles.title, department.name AS department, roles.salary 
   FROM roles 
-  JOIN department ON roles.department_id = department.id;
+  JOIN department ON roles.department_id = department.id
+  ORDER BY roles.id ASC;
   `;
 
   let result = await pool.query(viewAllRolesQry);
