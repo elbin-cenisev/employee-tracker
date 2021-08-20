@@ -43,13 +43,10 @@ async function main_menu() {
 
     case ("View All Employees"):
       viewEmployeeTable();
-
       break;
 
-    // Display department table
     case ("View All Departments"):
       viewAllDepartments();
-
       break;
 
     // Insert into department table
@@ -136,24 +133,13 @@ async function main_menu() {
 
       break;
 
-    // Show joined departments / roles table
     case ("View All Roles"):
-      const viewAllRolesQry = `
-        SELECT roles.id, roles.title, department.name AS department, roles.salary 
-        FROM roles 
-        JOIN department ON roles.department_id = department.id;
-        `;
-
-      db.query(viewAllRolesQry, (err, result) => {
-        if (err) { console.log(err); }
-        console.table(result);
-      });
-
+      viewAllRoles();
       break;
   }
 }
 
-/* Show all employees' name, title, department, salary and their 
+/* Display all employees' name, title, department, salary and their 
     manager's name (if they have been assigned to a manager) */
 function viewEmployeeTable() {
 
@@ -181,10 +167,25 @@ function viewEmployeeTable() {
   });
 }
 
+// Display department table
 function viewAllDepartments() {
   const viewAllDepartmentsQry = `SELECT * FROM department;`;
 
   db.query(viewAllDepartmentsQry, (err, result) => {
+    if (err) { console.log(err); }
+    console.table(result);
+  });
+}
+
+// Display joined departments / roles table
+function viewAllRoles() {
+  const viewAllRolesQry = `
+  SELECT roles.id, roles.title, department.name AS department, roles.salary 
+  FROM roles 
+  JOIN department ON roles.department_id = department.id;
+  `;
+
+  db.query(viewAllRolesQry, (err, result) => {
     if (err) { console.log(err); }
     console.table(result);
   });
