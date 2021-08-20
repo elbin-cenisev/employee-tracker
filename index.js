@@ -219,17 +219,78 @@ async function addEmployee() {
 
 // Update an employee's role
 async function updateEmpRole() {
-  // Select Employee that should be updated
-  // Update their role
-  const roleID = 2;
-  const empName = "John Doe";
+  // Generate a list of all currently existing employees
+  const getEmployeeListQry = `
+    SELECT CONCAT(first_name, ' ', last_name) AS name FROM employee
+    `;
 
+  let result = await pool.query(getEmployeeListQry);
+  if (result[0].length < 1) {
+    throw new Error('Couldn not generate list of employee names');
+  }
+
+  console.log(result[0]);
+
+  let employeeList = [];
+  await result[0].forEach((employee) => employeeList.push(employee.name));
+
+  // Ask user to select an employee from this list
+  const selectEmp = [
+    {
+      name: 'selection',
+      type: 'list',
+      message: "Select the employee whose role should be updated",
+      choices: employeeList
+    }
+  ];
+  let selectedEmp = await inquirer.prompt(selectEmp);
+  let empName = selectedEmp.selection;  // Holds name of selected role
+
+  // Generate a list of all currently existing roles
+  const getRolesListQry = `
+    SELECT title FROM roles 
+    `;
+
+  result = await pool.query(getRolesListQry);
+  if (result[0].length < 1) {
+    throw new Error('Could not generate list of role titles');
+  }
+
+  let roleList = [];
+  await result[0].forEach((role) => roleList.push(role.title));
+
+  // Ask user to select a role from this list
+  const selectRole = [
+    {
+      name: 'selection',
+      type: 'list',
+      message: "Select the role that should be assigned to the employee",
+      choices: roleList
+    }
+  ];
+  let selectedRole = await inquirer.prompt(selectRole);
+  let roleName = selectedRole.selection;  // Holds name of selected role
+
+  // Find matching id for this role
+  const getRoleIDQry = `
+    SELECT id FROM roles 
+    WHERE roles.title = ?
+  `;
+
+  result = await pool.query(getRoleIDQry, [roleName]);
+  if (result[0].length < 1) {
+    throw new Error('Role with this name was not found');
+  }
+
+  let roleID = result[0][0].id; // Holds role id for this role
+
+  // Update the selected employee's role to the selected role
   const updateRoleQry = `
     UPDATE employee
     SET role_id = ?
     WHERE CONCAT(employee.first_name, ' ', employee.last_name) = ?;
     `;
-  let result = await pool.query(updateRoleQry, [roleID, empName]);
+  result = await pool.query(updateRoleQry, [roleID, empName]);
   if (result[0].length < 1) {
     throw new Error("Could not update employee's role");
   }
