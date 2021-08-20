@@ -117,7 +117,7 @@ async function viewAllRoles() {
   console.table(result[0]);
 }
 
-// Insert into department table
+// Add a new department to the department table
 async function addDepartment() {
   // Ask for name of department that user wants to add
   let selectDepartment = [
@@ -140,53 +140,82 @@ async function addDepartment() {
   if (result[0].length < 1) {
     throw new Error('Something went wrong');
   }
-  else { console.log (`${department} department has been added`); }
+  else { console.log(`${department} department has been added`); }
 }
 
+// Add a new role to the role table
 async function addRole() {
-  // Ask for name of role
-  // Ask for salary of role
-  // Choose from department list
-  departmentList = ["Sales"]
+
+  // Ask user to specify title for the new role
+  let selectTitle = [
+    {
+      name: 'selection',
+      message: 'What is the title for this role?',
+    }
+  ];
+  let selectedTitle = await inquirer.prompt(selectTitle);
+
+  const title = selectedTitle.selection;  // Holds title for role
+
+  // Ask user to enter the salary for the new role
+  let selectSalary = [
+    {
+      name: 'selection',
+      message: 'What is the salary for this role?',
+    }
+  ];
+  let selectedSalary = await inquirer.prompt(selectSalary);
+
+  const salary = selectedSalary.selection;  // Holds salary for role
+
+  // Generate a list of all currently existing departments
+  const getDepartmentListQry = `
+  SELECT name FROM department 
+  `;
+
+  let result = await pool.query(getDepartmentListQry);
+  if (result[0].length < 1) {
+    throw new Error('Couldn not generate list of department names');
+  }
+
+  let departmentList = result[0]; // Holds array of all department names
+
+  // Ask user to select a department from this list
   const selectDepartment = [
     {
       name: 'selection',
       type: 'list',
-      message: 'What would you like to do?',
+      message: 'Select the department that this role belongs to',
       choices: departmentList
     }
   ];
-
-  // Choice user made in main menu
   let selectedDepartment = await inquirer.prompt(selectDepartment);
-  let departmentName = selectedDepartment.selection;
+  let departmentName = selectedDepartment.selection;  // Holds name of selected department
 
+  // Find matching id for this department
   const getDepartmentIDQry = `
   SELECT id FROM department 
   WHERE department.name = ?
   `;
 
-  let result = await pool.query(getDepartmentIDQry, [departmentName]);
+  result = await pool.query(getDepartmentIDQry, [departmentName]);
   if (result[0].length < 1) {
     throw new Error('Department with this name was not found');
   }
-  let departmentID = result[0][0].id;
-  console.log(departmentID);
 
-  // // Insert role into role table
-  // let role = "Example Role";
-  // let salary = 5;
-  // let departmentID = 1;
+  let departmentID = result[0][0].id; // Holds department id for this role
 
-  // const addRoleQry = `
-  // INSERT INTO role (title, salary, department_id) 
-  // VALUES ("${role}", ${salary}, ${departmentID});
-  // `;
+  // Insert new role into role table
+  const addRoleQry = `
+  INSERT INTO roles (title, salary, department_id) 
+  VALUES (?, ?, ?);
+  `;
 
-  // pool.query(addRoleQry, (err, result) => {
-  //   if (err) { console.log(err); }
-  //   console.log(`Added ${role} to the database`)
-  // });
+  result = await pool.query(addRoleQry, [title, salary, departmentID]);
+  if (result[0].length < 1) {
+    throw new Error('Something went wrong');
+  }
+  else { console.log(`${title} role has been added`); }
 }
 
 // Initialize application
