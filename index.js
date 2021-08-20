@@ -3,6 +3,7 @@ const inquirer = require('inquirer');
 const cTable = require('console.table');
 const DATABASE = 'employees_db'
 
+// Using pool instead of connection for mysql2/promise to work
 const pool = mysql.createPool(
   {
     host: 'localhost',
@@ -16,7 +17,7 @@ const pool = mysql.createPool(
   console.log(`Connected to the database.`)
 );
 
-// The main() function
+// The main function
 async function main_menu() {
 
   // Holds all main menu questions
@@ -27,6 +28,7 @@ async function main_menu() {
       message: 'What would you like to do?',
       choices: [
         "View All Employees",
+        "Add Employee",
         "View All Departments",
         "Add Department",
         "View All Roles",
@@ -51,7 +53,6 @@ async function main_menu() {
       addDepartment();
       break;
 
-    // Insert into roles table
     case ("Add Role"):
       addRole();
       break;
@@ -59,11 +60,14 @@ async function main_menu() {
     case ("View All Roles"):
       viewAllRoles();
       break;
+
+    case ("Add Employee"):
+      addEmployee();
+      break;
   }
 }
 
-/* Display all employees' name, title, department, salary and their 
-    manager's name (if they have been assigned to a manager) */
+// Display (modified) employee table
 async function viewEmployeeTable() {
 
   const viewAllEmployeesQry = `
@@ -102,7 +106,7 @@ async function viewAllDepartments() {
   console.table(result[0]);
 }
 
-// Display joined departments / roles table
+// Display (modified) roles table
 async function viewAllRoles() {
   const viewAllRolesQry = `
   SELECT roles.id, roles.title, department.name AS department, roles.salary 
