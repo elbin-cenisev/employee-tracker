@@ -44,7 +44,7 @@ async function main_menu() {
     /* Show all employees' name, title, department, salary and their 
     manager's name (if they have been assigned to a manager) */
     case ("View All Employees"):
-      getEmployeeTable();
+      viewEmployeeTable();
 
       break;
 
