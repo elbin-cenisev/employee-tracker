@@ -138,9 +138,9 @@ async function addDepartment() {
 
   let result = await pool.query(addDepartmentQry, [department]);
   if (result[0].length < 1) {
-    throw new Error('Department with this name was not found');
+    throw new Error('Something went wrong');
   }
-  console.table(result[0][0]);
+  else { console.log (`${department} department has been added`); }
 }
 
 async function addRole() {
