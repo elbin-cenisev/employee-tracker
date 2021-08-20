@@ -55,61 +55,7 @@ async function main_menu() {
 
     // Insert into roles table
     case ("Add Role"):
-
-      // // Ask for name of role
-      // const selectTitle = [
-      //   {
-      //     name: 'selection',
-      //     message: 'What is the name of the role?',
-      //   }
-      // ];
-      // let selectedTitle = await inquirer.prompt(selectTitle);
-      // const title = selectedTitle.selection;
-
-      // // Ask for salary of role
-      // const selectSalary = [
-      //   {
-      //     name: 'selection',
-      //     message: 'What is the salary of the role?',
-      //   }
-      // ];
-      // let selectedSalary = await inquirer.prompt(selectSalary);
-      // const salary = selectedSalary.selection;
-
-      // // Query for all department names so user can select from them
-      // let allDepartments = [];
-      // const getDepartmentNames = `
-      // SELECT name FROM department; 
-      // `;
-
-      // db.query(getDepartmentNames, (err, result) => {
-      //   if (err) { console.log(err); }
-      //   result.forEach((department) => allDepartments.push(department.name));
-      // });
-
-      // let selectDepartment = [
-      //   {
-      //     name: 'selection',
-      //     type: 'list',
-      //     message: 'Which department does the role belong to?',
-      //     choices: allDepartments
-      //   }
-      // ];
-      // let selectedDepartment = await inquirer.prompt(selectDepartment);
-      // let department = selectedDepartment.selection;
-      // console.log(department);
-
-      // // Insert the input into roles table
-      // const addRoleQry = `
-      // INSERT INTO roles (title, salary, department_id)
-      // VALUES  ("${title}", ${salary}, 1);
-      // `;
-
-      // db.query(addRoleQry, (err, result) => {
-      //   if (err) { console.log(err); }
-      //   console.log(`Added ${title} to the database`)
-      // });
-
+      addRole();
       break;
 
     case ("View All Roles"):
@@ -171,7 +117,7 @@ function viewAllRoles() {
 }
 
 // Insert into department table
-function addDepartment() {
+async function addDepartment() {
   // Ask for name of department that user wants to add
   let selectDepartment = [
     {
@@ -192,6 +138,26 @@ function addDepartment() {
   db.query(addDepartmentQry, (err, result) => {
     if (err) { console.log(err); }
     console.log(`Added ${department} to the database`)
+  });
+}
+
+async function addRole() {
+  // Ask for name of role
+  // Ask for salary of role
+  // Ask for department for role
+  // Insert role into role table
+  let role = "Example Role";
+  let salary = 5;
+  let departmentID = 1;
+
+  const addRoleQry = `
+  INSERT INTO roles (title, salary, department_id) 
+  VALUES ("${role}", ${salary}, ${departmentID});
+  `;
+
+  db.query(addRoleQry, (err, result) => {
+    if (err) { console.log(err); }
+    console.log(`Added ${role} to the database`)
   });
 }
 
