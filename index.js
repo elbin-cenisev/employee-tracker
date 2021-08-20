@@ -64,7 +64,7 @@ async function main_menu() {
 
 /* Display all employees' name, title, department, salary and their 
     manager's name (if they have been assigned to a manager) */
-function viewEmployeeTable() {
+async function viewEmployeeTable() {
 
   const viewAllEmployeesQry = `
   SELECT 
@@ -84,34 +84,37 @@ function viewEmployeeTable() {
     ON emp.manager_id = man.id
 `;
 
-  db.query(viewAllEmployeesQry, (err, result) => {
-    if (err) { console.log(err); }
-    console.table(result)
-  });
+  let result = await pool.query(viewAllEmployeesQry);
+  if (result[0].length < 1) {
+    throw new Error('Department with this name was not found');
+  }
+  console.table(result[0]);
 }
 
 // Display department table
-function viewAllDepartments() {
+async function viewAllDepartments() {
   const viewAllDepartmentsQry = `SELECT * FROM department;`;
 
-  db.query(viewAllDepartmentsQry, (err, result) => {
-    if (err) { console.log(err); }
-    console.table(result);
-  });
+  let result = await pool.query(viewAllDepartmentsQry);
+  if (result[0].length < 1) {
+    throw new Error('Department with this name was not found');
+  }
+  console.table(result[0]);
 }
 
 // Display joined departments / roles table
-function viewAllRoles() {
+async function viewAllRoles() {
   const viewAllRolesQry = `
   SELECT roles.id, roles.title, department.name AS department, roles.salary 
   FROM roles 
   JOIN department ON roles.department_id = department.id;
   `;
 
-  db.query(viewAllRolesQry, (err, result) => {
-    if (err) { console.log(err); }
-    console.table(result);
-  });
+  let result = await pool.query(viewAllRolesQry);
+  if (result[0].length < 1) {
+    throw new Error('Department with this name was not found');
+  }
+  console.table(result[0]);
 }
 
 // Insert into department table
@@ -130,13 +133,14 @@ async function addDepartment() {
   // Insert the new department into department table
   const addDepartmentQry = `
         INSERT INTO department (name) 
-        VALUES ("${department}");
+        VALUES (?);
         `;
 
-  db.query(addDepartmentQry, (err, result) => {
-    if (err) { console.log(err); }
-    console.log(`Added ${department} to the database`)
-  });
+  let result = await pool.query(addDepartmentQry, [department]);
+  if (result[0].length < 1) {
+    throw new Error('Department with this name was not found');
+  }
+  console.table(result[0][0]);
 }
 
 async function addRole() {
@@ -179,7 +183,7 @@ async function addRole() {
   // VALUES ("${role}", ${salary}, ${departmentID});
   // `;
 
-  // db.query(addRoleQry, (err, result) => {
+  // pool.query(addRoleQry, (err, result) => {
   //   if (err) { console.log(err); }
   //   console.log(`Added ${role} to the database`)
   // });
