@@ -29,6 +29,7 @@ async function main_menu() {
       choices: [
         "View All Employees",
         "Add Employee",
+        "Update Employee Role",
         "View All Departments",
         "Add Department",
         "View All Roles",
@@ -45,6 +46,14 @@ async function main_menu() {
       viewEmployeeTable();
       break;
 
+    case ("Add Employee"):
+      addEmployee();
+      break;
+
+    case ("Update Employee Role"):
+      updateEmpRole();
+      break;
+      
     case ("View All Departments"):
       viewAllDepartments();
       break;
@@ -61,9 +70,6 @@ async function main_menu() {
       viewAllRoles();
       break;
 
-    case ("Add Employee"):
-      addEmployee();
-      break;
   }
 }
 
