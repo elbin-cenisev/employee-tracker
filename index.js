@@ -26,7 +26,7 @@ async function main_menu() {
     {
       name: 'selection',
       type: 'list',
-      message: 'Who would you like to do?',
+      message: 'What would you like to do?',
       choices: [
         "View All Employees",
         "View All Departments",
@@ -44,28 +44,7 @@ async function main_menu() {
     /* Show all employees' name, title, department, salary and their 
     manager's name (if they have been assigned to a manager) */
     case ("View All Employees"):
-      const viewAllEmployeesQry = `
-      SELECT 
-        emp.id, 
-        emp.first_name,
-        emp.last_name,
-        roles.title,
-        department.name AS department,
-        roles.salary,
-        CONCAT(man.first_name, ' ', man.last_name) AS manager
-      FROM employee emp
-      JOIN roles
-        ON emp.role_id = roles.id
-      JOIN department
-        ON department.id = roles.department_id
-      LEFT JOIN employee man
-        ON emp.manager_id = man.id
-    `;
-
-      db.query(viewAllEmployeesQry, (err, result) => {
-        if (err) { console.log(err); }
-        console.table(result);
-      });
+      getEmployeeTable();
 
       break;
 
@@ -83,7 +62,7 @@ async function main_menu() {
     // Insert into department table
     case ("Add Department"):
       // Ask for name of department that user wants to add
-      const selectDepartment = [
+      let selectDepartment = [
         {
           name: 'selection',
           message: 'What is the name of the department?',
@@ -108,49 +87,59 @@ async function main_menu() {
     // Insert into roles table
     case ("Add Role"):
 
-      // Ask for salary of role
-      const selectTitle = [
-        {
-          name: 'selection',
-          message: 'What is the name of the role?',
-        }
-      ];
-      let selectedTitle = await inquirer.prompt(selectTitle);
-      const title = selectedTitle.selection;
+      // // Ask for name of role
+      // const selectTitle = [
+      //   {
+      //     name: 'selection',
+      //     message: 'What is the name of the role?',
+      //   }
+      // ];
+      // let selectedTitle = await inquirer.prompt(selectTitle);
+      // const title = selectedTitle.selection;
 
-      // Ask for salary of role
-      const selectSalary = [
-        {
-          name: 'selection',
-          message: 'What is the salary of the role?',
-        }
-      ];
-      let selectedSalary = await inquirer.prompt(selectSalary);
-      const salary = selectedSalary.selection;
+      // // Ask for salary of role
+      // const selectSalary = [
+      //   {
+      //     name: 'selection',
+      //     message: 'What is the salary of the role?',
+      //   }
+      // ];
+      // let selectedSalary = await inquirer.prompt(selectSalary);
+      // const salary = selectedSalary.selection;
 
-      // Ask for department of role
-      let allDepartments = [];
-      const selectDepartment2 = [
-        {
-          name: 'selection',
-          type: 'list',
-          message: 'Which department does the role belong to?',
-          choices: allDepartments
-        }
-      ];
-      let selectedDepartment = await inquirer.prompt(selectDepartment2);
-      // const department2 = selectedDepartment.selection;
+      // // Query for all department names so user can select from them
+      // let allDepartments = [];
+      // const getDepartmentNames = `
+      // SELECT name FROM department; 
+      // `;
 
-      // Insert the input into roles table
-      const addRoleQry = `
-      INSERT INTO roles (title, salary, department_id)
-      VALUES  ("${title}", ${salary}, 1);
-      `;
+      // db.query(getDepartmentNames, (err, result) => {
+      //   if (err) { console.log(err); }
+      //   result.forEach((department) => allDepartments.push(department.name));
+      // });
 
-      db.query(addRoleQry, (err, result) => {
-        if (err) { console.log(err); }
-        console.log(`Added ${title} to the database`)
-      });
+      // let selectDepartment = [
+      //   {
+      //     name: 'selection',
+      //     type: 'list',
+      //     message: 'Which department does the role belong to?',
+      //     choices: allDepartments
+      //   }
+      // ];
+      // let selectedDepartment = await inquirer.prompt(selectDepartment);
+      // let department = selectedDepartment.selection;
+      // console.log(department);
+
+      // // Insert the input into roles table
+      // const addRoleQry = `
+      // INSERT INTO roles (title, salary, department_id)
+      // VALUES  ("${title}", ${salary}, 1);
+      // `;
+
+      // db.query(addRoleQry, (err, result) => {
+      //   if (err) { console.log(err); }
+      //   console.log(`Added ${title} to the database`)
+      // });
 
       break;
 
@@ -171,5 +160,31 @@ async function main_menu() {
   }
 }
 
+
+function viewEmployeeTable() {
+
+  const viewAllEmployeesQry = `
+  SELECT 
+    emp.id, 
+    emp.first_name,
+    emp.last_name,
+    roles.title,
+    department.name AS department,
+    roles.salary,
+    CONCAT(man.first_name, ' ', man.last_name) AS manager
+  FROM employee emp
+  JOIN roles
+    ON emp.role_id = roles.id
+  JOIN department
+    ON department.id = roles.department_id
+  LEFT JOIN employee man
+    ON emp.manager_id = man.id
+`;
+
+  db.query(viewAllEmployeesQry, (err, result) => {
+    if (err) { console.log(err); }
+    console.table(result)
+  });
+}
 // Initialize application
 main_menu();
