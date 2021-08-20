@@ -222,5 +222,24 @@ async function addRole() {
   else { console.log(`${title} role has been added`); }
 }
 
+async function addEmployee() {
+  // Add employee to the employee table
+  const empFirstName = "Testoni";
+  const empLastName = "Testerino";
+  const empRoleID = 2;
+  const empManagerID = 2;
+
+  const addEmployeeQry = `
+  INSERT INTO employee (first_name, last_name, role_id, manager_id) 
+  VALUES (?, ?, ?, ?);
+  `;
+
+  result = await pool.query(addEmployeeQry, [empFirstName, empLastName, empRoleID, empManagerID]);
+  if (result[0].length < 1) {
+    throw new Error('Something went wrong');
+  }
+  else { console.log(`${empFirstName} ${empLastName} has been added to the list of employees`); }
+
+}
 // Initialize application
 main_menu();
