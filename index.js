@@ -53,7 +53,7 @@ async function main_menu() {
     case ("Update Employee Role"):
       updateEmpRole();
       break;
-      
+
     case ("View All Departments"):
       viewAllDepartments();
       break;
@@ -99,6 +99,141 @@ async function viewEmployeeTable() {
     throw new Error('Department with this name was not found');
   }
   console.table(result[0]);
+}
+
+// Add a new employee to the employee table
+async function addEmployee() {
+  // Ask user to enter the new employee's first name
+  let selectFName = [
+    {
+      name: 'selection',
+      message: "What is this employee's first name?",
+    }
+  ];
+  let selectedFName = await inquirer.prompt(selectFName);
+
+  const empFirstName = selectedFName.selection;  // Holds employee's first name
+
+  // Ask user to enter the new employee's last name
+  let selectLName = [
+    {
+      name: 'selection',
+      message: "What is this employee's last name?",
+    }
+  ];
+  let selectedLName = await inquirer.prompt(selectLName);
+
+  const empLastName = selectedLName.selection; // Holds employee's last name
+
+  // Generate a list of all currently existing roles
+  const getRolesListQry = `
+    SELECT title FROM roles 
+    `;
+
+  let result = await pool.query(getRolesListQry);
+  if (result[0].length < 1) {
+    throw new Error('Could not generate list of role titles');
+  }
+
+  let roleList = [];
+  await result[0].forEach((role) => roleList.push(role.title));
+
+  // Ask user to select a role from this list
+  const selectRole = [
+    {
+      name: 'selection',
+      type: 'list',
+      message: "Select this employee's role",
+      choices: roleList
+    }
+  ];
+  let selectedRole = await inquirer.prompt(selectRole);
+  let roleName = selectedRole.selection;  // Holds name of selected role
+
+  // Find matching id for this role
+  const getRoleIDQry = `
+    SELECT id FROM roles 
+    WHERE roles.title = ?
+    `;
+
+  result = await pool.query(getRoleIDQry, [roleName]);
+  if (result[0].length < 1) {
+    throw new Error('Role with this name was not found');
+  }
+
+  let empRoleID = result[0][0].id; // Holds role id for this role
+
+  // Generate a list of all currently existing employees
+  const getEmployeeListQry = `
+    SELECT CONCAT(first_name, ' ', last_name) AS name FROM employee
+    `;
+
+  result = await pool.query(getEmployeeListQry);
+  if (result[0].length < 1) {
+    throw new Error('Couldn not generate list of employee names');
+  }
+
+  console.log(result[0]);
+
+  let employeeList = [];
+  await result[0].forEach((employee) => employeeList.push(employee.name));
+
+  // Ask user to select an employee from this list
+  const selectManager = [
+    {
+      name: 'selection',
+      type: 'list',
+      message: "Select this employee's manager",
+      choices: employeeList
+    }
+  ];
+  let selectedManager = await inquirer.prompt(selectManager);
+  let managerName = selectedManager.selection;  // Holds name of selected role
+
+  // Find matching id for this role
+  const getManagerIDQry = `
+    SELECT id FROM employee 
+    WHERE CONCAT(employee.first_name, ' ', employee.last_name) = ?
+    `;
+
+  result = await pool.query(getManagerIDQry, [managerName]);
+  if (result[0].length < 1) {
+    throw new Error('Employee with this name was not found');
+  }
+
+  let empManagerID = result[0][0].id; // Holds role id for this role
+
+  // Add employee to the employee table
+  const addEmployeeQry = `
+  INSERT INTO employee (first_name, last_name, role_id, manager_id) 
+  VALUES (?, ?, ?, ?);
+  `;
+
+  result = await pool.query(addEmployeeQry, [empFirstName, empLastName, empRoleID, empManagerID]);
+  if (result[0].length < 1) {
+    throw new Error('Something went wrong');
+  }
+  else { console.log(`${empFirstName} ${empLastName} has been added to the list of employees`); }
+
+}
+
+// Update an employee's role
+async function updateEmpRole() {
+  // Select Employee that should be updated
+  // Update their role
+  const roleID = 2;
+  const empName = "John Doe";
+
+  const updateRoleQry = `
+    UPDATE employee
+    SET role_id = ?
+    WHERE CONCAT(employee.first_name, ' ', employee.last_name) = ?;
+    `;
+  let result = await pool.query(updateRoleQry, [roleID, empName]);
+  if (result[0].length < 1) {
+    throw new Error("Could not update employee's role");
+  }
+  console.log(`${empName}'s role has been updated.`);
 }
 
 // Display department table
@@ -226,122 +361,6 @@ async function addRole() {
     throw new Error('Something went wrong');
   }
   else { console.log(`${title} role has been added`); }
-}
-
-// Add a new employee to the employee table
-async function addEmployee() {
-  // Ask user to enter the new employee's first name
-  let selectFName = [
-    {
-      name: 'selection',
-      message: "What is this employee's first name?",
-    }
-  ];
-  let selectedFName = await inquirer.prompt(selectFName);
-
-  const empFirstName = selectedFName.selection;  // Holds employee's first name
-
-  // Ask user to enter the new employee's last name
-  let selectLName = [
-    {
-      name: 'selection',
-      message: "What is this employee's last name?",
-    }
-  ];
-  let selectedLName = await inquirer.prompt(selectLName);
-
-  const empLastName = selectedLName.selection; // Holds employee's last name
-
-  // Generate a list of all currently existing roles
-  const getRolesListQry = `
-    SELECT title FROM roles 
-    `;
-
-  let result = await pool.query(getRolesListQry);
-  if (result[0].length < 1) {
-    throw new Error('Could not generate list of role titles');
-  }
-
-  let roleList = [];
-  await result[0].forEach((role) => roleList.push(role.title));
-
-  // Ask user to select a role from this list
-  const selectRole = [
-    {
-      name: 'selection',
-      type: 'list',
-      message: "Select this employee's role",
-      choices: roleList
-    }
-  ];
-  let selectedRole = await inquirer.prompt(selectRole);
-  let roleName = selectedRole.selection;  // Holds name of selected role
-
-  // Find matching id for this role
-  const getRoleIDQry = `
-    SELECT id FROM roles 
-    WHERE roles.title = ?
-    `;
-
-  result = await pool.query(getRoleIDQry, [roleName]);
-  if (result[0].length < 1) {
-    throw new Error('Role with this name was not found');
-  }
-
-  let empRoleID = result[0][0].id; // Holds role id for this role
-
-  // Generate a list of all currently existing employees
-  const getEmployeeListQry = `
-    SELECT CONCAT(first_name, ' ', last_name) AS name FROM employee
-    `;
-
-  result = await pool.query(getEmployeeListQry);
-  if (result[0].length < 1) {
-    throw new Error('Couldn not generate list of employee names');
-  }
-
-  console.log(result[0]);
-
-  let employeeList = [];
-  await result[0].forEach((employee) => employeeList.push(employee.name));
-
-  // Ask user to select an employee from this list
-  const selectManager = [
-    {
-      name: 'selection',
-      type: 'list',
-      message: "Select this employee's manager",
-      choices: employeeList
-    }
-  ];
-  let selectedManager = await inquirer.prompt(selectManager);
-  let managerName = selectedManager.selection;  // Holds name of selected role
-
-  // Find matching id for this role
-  const getManagerIDQry = `
-    SELECT id FROM employee 
-    WHERE CONCAT(employee.first_name, ' ', employee.last_name) = ?
-    `;
-
-  result = await pool.query(getManagerIDQry, [managerName]);
-  if (result[0].length < 1) {
-    throw new Error('Employee with this name was not found');
-  }
-
-  let empManagerID = result[0][0].id; // Holds role id for this role
-
-  // Add employee to the employee table
-  const addEmployeeQry = `
-  INSERT INTO employee (first_name, last_name, role_id, manager_id) 
-  VALUES (?, ?, ?, ?);
-  `;
-
-  result = await pool.query(addEmployeeQry, [empFirstName, empLastName, empRoleID, empManagerID]);
-  if (result[0].length < 1) {
-    throw new Error('Something went wrong');
-  }
-  else { console.log(`${empFirstName} ${empLastName} has been added to the list of employees`); }
-
 }
 
 // Initialize application
