@@ -41,8 +41,6 @@ async function main_menu() {
 
   switch (selection.selection) {
 
-    /* Show all employees' name, title, department, salary and their 
-    manager's name (if they have been assigned to a manager) */
     case ("View All Employees"):
       viewEmployeeTable();
 
@@ -50,12 +48,7 @@ async function main_menu() {
 
     // Display department table
     case ("View All Departments"):
-      const viewAllDepartmentsQry = `SELECT * FROM department;`;
-
-      db.query(viewAllDepartmentsQry, (err, result) => {
-        if (err) { console.log(err); }
-        console.table(result);
-      });
+      viewAllDepartments();
 
       break;
 
@@ -160,7 +153,8 @@ async function main_menu() {
   }
 }
 
-
+/* Show all employees' name, title, department, salary and their 
+    manager's name (if they have been assigned to a manager) */
 function viewEmployeeTable() {
 
   const viewAllEmployeesQry = `
@@ -184,6 +178,15 @@ function viewEmployeeTable() {
   db.query(viewAllEmployeesQry, (err, result) => {
     if (err) { console.log(err); }
     console.table(result)
+  });
+}
+
+function viewAllDepartments() {
+  const viewAllDepartmentsQry = `SELECT * FROM department;`;
+
+  db.query(viewAllDepartmentsQry, (err, result) => {
+    if (err) { console.log(err); }
+    console.table(result);
   });
 }
 // Initialize application
