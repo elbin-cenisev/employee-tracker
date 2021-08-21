@@ -17,8 +17,8 @@ const pool = mysql.createPool(
   console.log(`Connected to the database.`)
 );
 
-// The main function
-async function main_menu() {
+// The main function of the app
+async function main_menu() { 
 
   // Holds all main menu questions
   const mainMenuQs = [
@@ -33,43 +33,68 @@ async function main_menu() {
         "View All Departments",
         "Add Department",
         "View All Roles",
-        "Add Role"]
+        "Add Role",
+        "Quit"]
     }
   ];
 
-  // Choice user made in main menu
-  let selection = await inquirer.prompt(mainMenuQs);
+  // Intro art
+  console.log(`
+  ___________              .__                               
+\_   _____/ _____ ______ |  |   ____ ___.__. ____   ____   
+ |    __)_ /     \\____ \|  |  /  _ <   |  |/ __ \_/ __ \  
+ |        \  Y Y  \  |_> >  |_(  <_> )___  \  ___/\  ___/  
+/_______  /__|_|  /   __/|____/\____// ____|\___  >\___  > 
+        \/      \/|__|               \/         \/     \/  
+___________                     __                         
+\__    ___/___________    ____ |  | __ ___________         
+  |    |  \_  __ \__  \ _/ ___\|  |/ // __ \_  __ \        
+  |    |   |  | \// __ \\  \___|    <\  ___/|  | \/        
+  |____|   |__|  (____  /\___  >__|_ \\___  >__|           
+                      \/     \/     \/    \/ 
+`);
 
-  switch (selection.selection) {
+  // Run this menu until "quit" is selected
+  let running = true;
+  while (running) {
 
-    case ("View All Employees"):
-      viewEmployeeTable();
-      break;
+    // Choice user made in main menu
+    let selection = await inquirer.prompt(mainMenuQs);
 
-    case ("Add Employee"):
-      addEmployee();
-      break;
+    switch (selection.selection) {
 
-    case ("Update Employee Role"):
-      updateEmpRole();
-      break;
+      case ("View All Employees"):
+        await viewEmployeeTable();
+        break;
 
-    case ("View All Departments"):
-      viewAllDepartments();
-      break;
+      case ("Add Employee"):
+        await addEmployee();
+        break;
 
-    case ("Add Department"):
-      addDepartment();
-      break;
+      case ("Update Employee Role"):
+        await updateEmpRole();
+        break;
 
-    case ("Add Role"):
-      addRole();
-      break;
+      case ("View All Departments"):
+        await viewAllDepartments();
+        break;
 
-    case ("View All Roles"):
-      viewAllRoles();
-      break;
+      case ("Add Department"):
+        await addDepartment();
+        break;
 
+      case ("Add Role"):
+        await addRole();
+        break;
+
+      case ("View All Roles"):
+        await viewAllRoles();
+        break;
+
+      case ("Quit"):
+        running = false;
+        break;
+    }
   }
 }
 
@@ -173,8 +198,6 @@ async function addEmployee() {
   if (result[0].length < 1) {
     throw new Error('Couldn not generate list of employee names');
   }
-
-  console.log(result[0]);
 
   let employeeList = [];
   await result[0].forEach((employee) => employeeList.push(employee.name));
@@ -426,5 +449,5 @@ async function addRole() {
   else { console.log(`${title} role has been added`); }
 }
 
-// Initialize application
+// Initialize app
 main_menu();
