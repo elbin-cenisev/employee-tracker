@@ -30,7 +30,6 @@ async function main_menu() {
         "View All Employees",
         "Add Employee",
         "Update Employee Role",
-        "Update an Employee's Manager",
         "View All Departments",
         "Add Department",
         "View All Roles",
@@ -41,23 +40,28 @@ async function main_menu() {
 
   // Intro art
   console.log(`
-  ___________              .__                               
-\_   _____/ _____ ______ |  |   ____ ___.__. ____   ____   
- |    __)_ /     \\____ \|  |  /  _ <   |  |/ __ \_/ __ \  
- |        \  Y Y  \  |_> >  |_(  <_> )___  \  ___/\  ___/  
-/_______  /__|_|  /   __/|____/\____// ____|\___  >\___  > 
-        \/      \/|__|               \/         \/     \/  
-___________                     __                         
-\__    ___/___________    ____ |  | __ ___________         
-  |    |  \_  __ \__  \ _/ ___\|  |/ // __ \_  __ \        
-  |    |   |  | \// __ \\  \___|    <\  ___/|  | \/        
-  |____|   |__|  (____  /\___  >__|_ \\___  >__|           
-                      \/     \/     \/    \/ 
+  
+███████╗███╗░░░███╗██████╗░██╗░░░░░░█████╗░██╗░░░██╗███████╗███████╗
+██╔════╝████╗░████║██╔══██╗██║░░░░░██╔══██╗╚██╗░██╔╝██╔════╝██╔════╝
+█████╗░░██╔████╔██║██████╔╝██║░░░░░██║░░██║░╚████╔╝░█████╗░░█████╗░░
+██╔══╝░░██║╚██╔╝██║██╔═══╝░██║░░░░░██║░░██║░░╚██╔╝░░██╔══╝░░██╔══╝░░
+███████╗██║░╚═╝░██║██║░░░░░███████╗╚█████╔╝░░░██║░░░███████╗███████╗
+╚══════╝╚═╝░░░░░╚═╝╚═╝░░░░░╚══════╝░╚════╝░░░░╚═╝░░░╚══════╝╚══════╝
+
+████████╗██████╗░░█████╗░░█████╗░██╗░░██╗███████╗██████╗░
+╚══██╔══╝██╔══██╗██╔══██╗██╔══██╗██║░██╔╝██╔════╝██╔══██╗
+░░░██║░░░██████╔╝███████║██║░░╚═╝█████═╝░█████╗░░██████╔╝
+░░░██║░░░██╔══██╗██╔══██║██║░░██╗██╔═██╗░██╔══╝░░██╔══██╗
+░░░██║░░░██║░░██║██║░░██║╚█████╔╝██║░╚██╗███████╗██║░░██║
+░░░╚═╝░░░╚═╝░░╚═╝╚═╝░░╚═╝░╚════╝░╚═╝░░╚═╝╚══════╝╚═╝░░╚═╝
+
 `);
 
   // Run this menu until "quit" is selected
   let running = true;
   while (running) {
+
+    console.log(" "); // Just for a bit of space between each round
 
     // Choice user made in main menu
     let selection = await inquirer.prompt(mainMenuQs);
@@ -74,10 +78,6 @@ ___________                     __
 
       case ("Update Employee Role"):
         await updateEmpRole();
-        break;
-
-      case ("Update an Employee's Manager"):
-        await updateEmpMan();
         break;
 
       case ("View All Departments"):
@@ -258,8 +258,6 @@ async function updateEmpRole() {
     throw new Error('Couldn not generate list of employee names');
   }
 
-  console.log(result[0]);
-
   let employeeList = [];
   await result[0].forEach((employee) => employeeList.push(employee.name));
 
@@ -324,12 +322,6 @@ async function updateEmpRole() {
     throw new Error("Could not update employee's role");
   }
   console.log(`${empName}'s role has been updated.`);
-}
-
-// Update an employee's manager
-async function updateEmpMan() {
-  console.log(" ");
-  console.log("Inside employee manager update");
 }
 
 // Display department table
