@@ -65,6 +65,8 @@ async function main_menu() {
 
     // Choice user made in main menu
     let selection = await inquirer.prompt(mainMenuQs);
+    
+    console.log(" ") // Just for a bit of space
 
     switch (selection.selection) {
 
