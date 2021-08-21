@@ -30,6 +30,7 @@ async function main_menu() {
         "View All Employees",
         "Add Employee",
         "Update Employee Role",
+        "Update an Employee's Manager",
         "View All Departments",
         "Add Department",
         "View All Roles",
@@ -73,6 +74,10 @@ ___________                     __
 
       case ("Update Employee Role"):
         await updateEmpRole();
+        break;
+
+      case ("Update an Employee's Manager"):
+        await updateEmpMan();
         break;
 
       case ("View All Departments"):
@@ -319,6 +324,12 @@ async function updateEmpRole() {
     throw new Error("Could not update employee's role");
   }
   console.log(`${empName}'s role has been updated.`);
+}
+
+// Update an employee's manager
+async function updateEmpMan() {
+  console.log(" ");
+  console.log("Inside employee manager update");
 }
 
 // Display department table
