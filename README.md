@@ -7,7 +7,7 @@ Based on Assignment 12 of the Full-Stack Bootcamp. Create CMS using MYSQL, Expre
 Node, Inquirer, mysql2, console.table
 
 ## Walkthrough Video
-[To be added]
+https://drive.google.com/file/d/1Z4_qNFUAzl48Z93MBZlCdh3VlsNwSAr5/view
 
 # License
 MIT License
